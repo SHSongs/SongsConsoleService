@@ -8,7 +8,7 @@ from discord.ext import commands
 import time
 import discord
 
-TOKEN = 'Nzk3NjY1OTcxODU4OTY0NDkw.X_pyUw.ZkIL31zsGHJaskcX7gM2I3TqK1A'
+TOKEN = ''
 port = 4000
 
 Receive_Buffer = []
