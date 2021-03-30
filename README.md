@@ -14,7 +14,7 @@ CmdExcuter.py 명령어 실행 후 서버에게 반환값 전달
 ## Demo
 ![Demo](imgs/Demo1.png)  
 ![Demo](imgs/Demo2.png)  
-
+[Demo Video](/demo)
 
 ## dependency
 discord bot
