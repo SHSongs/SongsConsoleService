@@ -8,11 +8,24 @@ port = 4000
 user_list = {}
 notice_flag = 0
 
+default_cmd_executor = None
+
 
 def msg_func(msg, user):
+    global default_cmd_executor
+
     print(msg)
     if user == 'bot':
         lst = msg.split()
+
+        if lst[-2] == 'setup_cmd':  # default cmd executor setup
+            if lst[-1] in user_list:
+                default_cmd_executor = lst[-1]
+            else:
+                msg = "not found cmd executor"
+                user_list[user].send(msg.encode('utf-8'))
+            return
+
         if lst[-1] in user_list:
             try:
                 msg = " ".join(lst[0:-1])
