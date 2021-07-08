@@ -79,13 +79,14 @@ if __name__ == '__main__':
         user = 'ooc'
 
     print(user)
-    host = '172.17.0.1'
+    host = '127.0.0.1'
     try:
         port = int(args.p)
     except:
         pass
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
+    print(port)
     client_socket.connect((host, port))
 
     client_socket.send(user.encode('utf-8'))

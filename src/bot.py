@@ -3,9 +3,7 @@ import argparse
 import threading
 import asyncio
 from discord.ext import tasks
-import datetime
 from discord.ext import commands
-import time
 import discord
 
 TOKEN = ''
@@ -25,7 +23,7 @@ def handle_receive(lient_socket, user):
             break
         data = data.decode('utf-8')
         Receive_Buffer.append(data)
-        print(data)
+        print("data :", data)
 
 
 def handle_send(client_socket):
@@ -43,21 +41,27 @@ def handle_send(client_socket):
     client_socket.close()
 
 
-bot = commands.Bot(command_prefix='!')
+intent = discord.Intents.all()
+bot = commands.Bot(command_prefix='!', intents=intent)
 
+send_channel = None
 
 
 class chatbot(discord.Client):
+
     # 1초에 한번 수행될 작업
     # 여기 함수는 에러가 나도 에러 메시지가 출력되지 않으므로 주의.
     @tasks.loop(seconds=0.5)
     async def every_hour_notice(self):
+        global send_channel
 
+        if send_channel == None:
+            return
         if len(Receive_Buffer) != 0:
             msg = Receive_Buffer[0]
             Receive_Buffer.pop(0)
-            await client.get_guild(797419837965991986).get_channel(797420500019052545).send(msg)
-
+            client.get_all_channels()
+            await send_channel.send(msg)
 
     # on_ready는 봇을 다시 구성할 때도 호출 됨 (한번만 호출되는 것이 아님.)
     async def on_ready(self):
@@ -69,6 +73,7 @@ class chatbot(discord.Client):
 
     # 봇에 메시지가 오면 수행 될 액션
     async def on_message(self, message):
+        global send_channel
         if message.author.bot:
             return None
         msg = message.content
@@ -79,13 +84,13 @@ class chatbot(discord.Client):
             cmd = " ".join(msg[1:])
             print(cmd)
             Send_Buffer.append(cmd.encode('utf-8'))
-
-
+            send_channel = message.channel
+            # print(f"channel : {send_channel.id}")
             return None
 
 
-
 client = chatbot()
+
 
 async def start():
     global client
@@ -97,7 +102,6 @@ def run_it_forever(loop):
 
 
 def init():
-    asyncio.get_child_watcher()
     loop = asyncio.get_event_loop()
     loop.create_task(start())
 
