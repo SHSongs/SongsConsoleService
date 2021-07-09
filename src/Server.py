@@ -21,6 +21,10 @@ def msg_func(msg, user):
         if lst[-2] == 'setup_cmd':  # default cmd executor setup
             if lst[-1] in user_list:
                 default_cmd_executor = lst[-1]
+
+                msg = 'setup cmd executor'
+                user_list[user].send(msg.encode('utf-8'))
+
             else:
                 msg = "not found cmd executor"
                 user_list[user].send(msg.encode('utf-8'))
@@ -36,13 +40,19 @@ def msg_func(msg, user):
             except:
                 print("연결이 비 정상적으로 종료된 소켓 발견")
         else:
-            for con in user_list.values():
-                try:
-                    if con != user_list[user]:
-                        print(con)
-                        con.send(msg.encode('utf-8'))
-                except:
-                    print("연결이 비 정상적으로 종료된 소켓 발견")
+            if default_cmd_executor is not None:
+                user_list[default_cmd_executor].send(msg.encode('utf-8'))
+            else:
+
+                for con in user_list.values():
+                    try:
+                        if con != user_list[user]:
+                            print(con)
+                            con.send(msg.encode('utf-8'))
+                            break
+                    except:
+                        print("연결이 비 정상적으로 종료된 소켓 발견")
+
     else:
         try:
             user_list['bot'].send(msg.encode('utf-8'))
